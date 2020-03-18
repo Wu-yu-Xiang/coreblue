@@ -31,7 +31,7 @@ class ViewController1: UITableViewController, CBCentralManagerDelegate,CBPeriphe
         btRSSIs.removeAll()
         tableView.register(UINib(nibName: "PeripheralCell", bundle: nil), forCellReuseIdentifier: "PeripheralCell")
         
-        Timer.scheduledTimer(timeInterval: 5, target: self, selector: #selector(CBCentralManager.stopScan), userInfo: nil, repeats: false)
+        Timer.scheduledTimer(timeInterval: 5, target: self, selector: #selector(stopScan), userInfo: nil, repeats: false)
         btCentralManager.scanForPeripherals(withServices: nil, options: nil)
     }
     
@@ -42,7 +42,7 @@ class ViewController1: UITableViewController, CBCentralManagerDelegate,CBPeriphe
     }
     
 
-    func stopScan() {
+    @objc func stopScan() {
         btCentralManager.stopScan()
         bbRefresh.isEnabled = true
         tableView.reloadData()
@@ -120,20 +120,25 @@ class ViewController1: UITableViewController, CBCentralManagerDelegate,CBPeriphe
     ////////////////////////////////////
     
     
+  
     
+//    private func centralManager(central: CBCentralManager, didDiscoverPeripheral peripheral: CBPeripheral, advertisementData: [String : AnyObject], RSSI: NSNumber) {
+        
+//       let temp = btPeripherals.filter { (pl) -> Bool in
+//            return pl.identifier.uuidString == peripheral.identifier.uuidString
+//        }
+//
+//        if temp.count == 0 {
+//            btPeripherals.append(peripheral)
+//            btRSSIs.append(RSSI)
+//            btConnectable.append(Int(advertisementData[CBAdvertisementDataIsConnectable]!.description)!)
+//        }
+//    }
     
-    private func centralManager(central: CBCentralManager, didDiscoverPeripheral peripheral: CBPeripheral, advertisementData: [String : AnyObject], RSSI: NSNumber) {
-        
-       let temp = btPeripherals.filter { (pl) -> Bool in
-            return pl.identifier.uuidString == peripheral.identifier.uuidString
-        }
-        
-        if temp.count == 0 {
-            btPeripherals.append(peripheral)
-            btRSSIs.append(RSSI)
-            btConnectable.append(Int(advertisementData[CBAdvertisementDataIsConnectable]!.description)!)
-        }
+    func centralManager(_ central: CBCentralManager, didDiscover peripheral: CBPeripheral, advertisementData: [String : Any], rssi RSSI: NSNumber) {
+        print(peripheral)
     }
+    
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
            tableView.deselectRow(at: indexPath as IndexPath, animated: true)
            self.performSegue(withIdentifier: "PeripheralCell", sender: indexPath.row)
